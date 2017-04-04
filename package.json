@@ -1,0 +1,28 @@
+{
+  "name": "lazy-chef",
+  "version": "1.0.0",
+  "description": "Plan meals and grocery shopping for a week, no effort required.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickrttn/lazy-chef.git"
+  },
+  "keywords": [
+    "progressive",
+    "enhancement",
+    "javascript",
+    "cooking",
+    "meal",
+    "planning",
+    "food"
+  ],
+  "author": "Nick Rutten <hello@nickrttn.me>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nickrttn/lazy-chef/issues"
+  },
+  "homepage": "https://github.com/nickrttn/lazy-chef#readme"
+}
