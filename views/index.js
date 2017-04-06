@@ -12,7 +12,7 @@ module.exports = () => `
 	<article>
 		<h1>Lazy <span>Chef</span></h1>
 		<p>We know you're lazy. This will help you plan your meals and grocery shopping! Get five recipes and a grocery shopping list for the week with the click of a button.</p>
-		<p><a href="/planning">Plan your meals</a></p>
+		<p><a href="/recipes">Get your recipes</a></p>
 	</article>
 </body>
 </html>

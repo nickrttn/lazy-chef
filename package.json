@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "test": "npm run lint",
+    "test": "xo && npm run lint",
     "lint": "standard",
     "css": "cleancss -o build/assets/index.css src/css/index.css & cleancss -o build/assets/planning.css src/css/planning.css",
     "watch": "npm run dev & npm run browser-sync & npm run watch:css",
@@ -33,13 +33,16 @@
   "dependencies": {
     "dotenv": "^4.0.0",
     "express": "^4.15.2",
-    "nano": "^6.2.0",
-    "trello": "^0.7.0"
+    "pouchdb": "^6.1.2",
+    "pouchdb-upsert": "^2.2.0",
+    "trello": "^0.7.0",
+    "vdom-to-html": "^2.3.1",
+    "virtual-dom": "^2.1.1"
   },
   "devDependencies": {
     "clean-css-cli": "^4.0.10",
     "nodemon": "^1.11.0",
-    "standard": "^10.0.0",
-    "watch": "^1.0.2"
+    "watch": "^1.0.2",
+    "xo": "^0.18.1"
   }
 }
