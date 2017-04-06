@@ -4,8 +4,13 @@
   "description": "Plan meals and grocery shopping for a week, no effort required.",
   "main": "server.js",
   "scripts": {
+    "dev": "nodemon server.js",
     "test": "npm run lint",
-    "lint": "xo"
+    "lint": "standard",
+    "css": "cleancss -o build/assets/index.css src/css/index.css",
+    "watch": "npm run dev & npm run browser-sync & npm run watch:css",
+    "watch:css": "watch 'npm run css' src/css",
+    "browser-sync": "browser-sync start -p localhost:3000 --files build/**/*"
   },
   "repository": {
     "type": "git",
@@ -27,5 +32,11 @@
   "homepage": "https://github.com/nickrttn/lazy-chef#readme",
   "dependencies": {
     "express": "^4.15.2"
+  },
+  "devDependencies": {
+    "clean-css-cli": "^4.0.10",
+    "nodemon": "^1.11.0",
+    "standard": "^10.0.0",
+    "watch": "^1.0.2"
   }
 }
