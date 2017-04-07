@@ -7,7 +7,7 @@
     "dev": "nodemon server.js",
     "test": "xo && npm run lint",
     "lint": "standard",
-    "css": "cleancss -o build/assets/index.css src/css/index.css & cleancss -o build/assets/planning.css src/css/planning.css",
+    "css": "cleancss -o build/assets/index.css src/css/shared.css src/css/index.css & cleancss -o build/assets/recipes.css src/css/shared.css src/css/recipes.css",
     "watch": "npm run dev & npm run browser-sync & npm run watch:css",
     "watch:css": "watch 'npm run css' src/css",
     "browser-sync": "browser-sync start -p localhost:3000 --files build/**/*"

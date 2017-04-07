@@ -1,0 +1,17 @@
+ul {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-around;
+
+	margin: 0;
+	padding: 0;
+
+	list-style-type: none;
+}
+
+li {
+	flex: 1 45vw;
+
+	margin: .5em;
+	padding: 4vmin 4vmax;
+}

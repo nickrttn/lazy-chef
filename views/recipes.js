@@ -1,20 +1,18 @@
 const h = require('virtual-dom/h');
 const db = require('../lib/db');
 
-function recipes() {
-	let node;
+function recipes(callback) {
+	db.allDocs({include_docs: true}, onresponse); // eslint-disable-line
 
-	db.allDocs({include_docs: true}, (err, docs) => { // eslint-disable-line
-		node = h('ul', {data: {type: 'recipes'}}, docs.rows.map(row => {
-			return row.doc.type === 'recipe' ? h('li', row.doc.name) : null;
-		}));
-	});
+	function onresponse(err, docs) {
+		if (err) throw err; // eslint-disable-line
 
-	return node;
-}
-
-function render(node) {
-	return node;
+		callback(h('ul', {dataset: {type: 'recipes'}}, docs.rows.map(row => {
+			return row.doc.type === 'recipe' ? h('li', {
+				dataset: {}
+			}, row.doc.name) : null;
+		})));
+	}
 }
 
 module.exports = recipes;
