@@ -4,13 +4,13 @@
   "description": "Plan meals and grocery shopping for a week, no effort required.",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
+    "dev": "DEBUG=app,prismic,recipes nodemon server.js",
     "test": "xo && npm run lint",
     "lint": "standard",
-    "css": "cleancss -o build/assets/index.css src/css/index.css & cleancss -o build/assets/planning.css src/css/planning.css",
-    "watch": "npm run dev & npm run browser-sync & npm run watch:css",
-    "watch:css": "watch 'npm run css' src/css",
-    "browser-sync": "browser-sync start -p localhost:3000 --files build/**/*"
+    "css": "cleancss -o client/build/index.css client/src/css/index.css",
+    "watch": "npm run browser-sync & npm run watch:css",
+    "watch:css": "watch 'npm run css' client/src/css",
+    "browser-sync": "browser-sync start --proxy localhost:3000 --port 3001 --files client/build/**/*"
   },
   "repository": {
     "type": "git",
@@ -31,18 +31,34 @@
   },
   "homepage": "https://github.com/nickrttn/lazy-chef#readme",
   "dependencies": {
+    "debug": "^2.6.8",
     "dotenv": "^4.0.0",
+    "ejs": "^2.5.6",
     "express": "^4.15.2",
-    "pouchdb": "^6.1.2",
-    "pouchdb-upsert": "^2.2.0",
-    "trello": "^0.7.0",
-    "vdom-to-html": "^2.3.1",
-    "virtual-dom": "^2.1.1"
+    "morgan": "^1.8.2",
+    "prismic.io": "^3.5.6"
   },
   "devDependencies": {
+    "browser-sync": "^2.18.12",
     "clean-css-cli": "^4.0.10",
     "nodemon": "^1.11.0",
     "watch": "^1.0.2",
     "xo": "^0.18.1"
+  },
+  "xo": {
+    "rules": {
+      "unicorn/no-new-buffer": "off",
+      "unicorn/filename-case": "off",
+      "unicorn/custom-error-definition": "off",
+      "unicorn/no-array-instanceof": "off",
+      "unicorn/catch-error-name": "off",
+      "unicorn/no-process-exit": "off",
+      "unicorn/throw-new-error": "off",
+      "unicorn/number-literal-case": "off",
+      "unicorn/prefer-starts-ends-with": "off",
+      "unicorn/prefer-type-error": "off",
+      "unicorn/explicit-length-check": "off",
+      "unicorn/no-abusive-eslint-disable": "off"
+    }
   }
 }

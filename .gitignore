@@ -38,3 +38,9 @@ jspm_packages
 
 # Environment file
 .env
+
+# Built client-side files
+client/build
+
+# OS Specific
+.DS_Store

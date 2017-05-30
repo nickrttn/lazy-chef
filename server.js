@@ -1,23 +1,25 @@
+require('dotenv').config();
+
+const path = require('path');
+const debug = require('debug')('app');
+const logger = require('morgan');
 const express = require('express');
 
-const seed = require('./lib/seed');
-const recipes = require('./routers/recipes');
-const render = require('./views/index');
+const app = express();
 
-// Seed the database
-seed();
+app
+	.set('view engine', 'ejs')
+	.use(logger('dev'))
+	.use('/assets', express.static(path.join(__dirname, 'client/build')))
+	.use('/recipe', require('./routers/recipe'))
+	.get('/', onindex)
+	.listen(process.env.LC_PORT, onlisten);
 
-const app = express()
-	.set('port', process.env.port || 3000)
-	.use('/assets', express.static('build/assets'))
-	.get('/', index)
-	.use('/recipes', recipes);
-
-function index(req, res) {
-	res.type('.html');
-	res.end(render());
+function onindex(req, res) {
+	res.render('index', {stylesheet: 'index'});
 }
 
-app.listen(app.get('port'), () => {
-	console.log(`Application listening on localhost:${app.get('port')}`);
-});
+function onlisten(err) {
+	if (err) return debug(err); // eslint-disable-line curly
+	debug(`Application listening on http://localhost:${process.env.LC_PORT}`);
+}
