@@ -4,12 +4,22 @@ const path = require('path');
 const debug = require('debug')('app');
 const logger = require('morgan');
 const express = require('express');
+const redis = require('redis');
+const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
 
-const app = express();
-
-app
+express()
+	.set('port', process.env.LC_PORT)
 	.set('view engine', 'ejs')
+	.set('x-powered-by', false)
 	.use(logger('dev'))
+	.use(session({
+		store: new RedisStore({client: redis.createClient()}),
+		secret: process.env.LC_SESSION_SECRET,
+		resave: false,
+		saveUninitialized: false,
+		cookie: {}
+	}))
 	.use('/assets', express.static(path.join(__dirname, 'client/build')))
 	.use('/recipe', require('./routers/recipe'))
 	.get('/', onindex)
