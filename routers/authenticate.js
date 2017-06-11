@@ -12,15 +12,16 @@ router.get('/register', (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
-	const {username, password} = req.body;
-	const newUser = await user.create({username, password});
+	const newUser = await user.create(req.body);
+
+	debug(newUser);
 
 	req.login(newUser, err => {
 		if (err) {
 			return debug(err);
 		}
 
-		res.redirect('/categories')
+		res.redirect('/categories');
 	});
 });
 

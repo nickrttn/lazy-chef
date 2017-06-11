@@ -1,3 +1,4 @@
+const debug = require('debug')('user');
 const bcrypt = require('bcrypt');
 const MongoClient = require('mongodb').MongoClient;
 
@@ -19,24 +20,35 @@ class User {
 		this._connect();
 		user.hash = await bcrypt.hash(user.password, this.saltRounds);
 
-		this.collection.insertOne({
-			username: user.username,
-			hash: user.hash,
-			firstName: user.firstName,
-			lastName: user.lastName,
-			fullName: `${user.firstName} ${user.lastName}`
-		});
+		try {
+			debug('user.create');
+			await this.collection.insertOne({
+				_id: user.username,
+				username: user.username,
+				hash: user.hash,
+				firstName: user.firstName,
+				lastName: user.lastName,
+				fullName: `${user.firstName} ${user.lastName}`
+			});
+		} catch (err) {
+			debug(err);
+			if (err.code === '11000') {
+				debug('duplicate key');
+			}
+		}
 
 		return {
+			_id: user.username,
 			username: user.username,
 			firstName: user.firstName,
 			hash: user.hash
 		};
 	}
 
-	async read(userId) {
-		this._connect();
-
+	async read(username) {
+		await this._connect();
+		const user = await this.collection.findOne({_id: username});
+		return user;
 	}
 
 	async update(userId, user) {
