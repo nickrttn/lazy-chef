@@ -1,0 +1,25 @@
+<%- include('application/head') %>
+
+<form action="/auth/register" method="post">
+    <div>
+        <label for="firstName">First name</label>
+        <input type="text" id="firstName" name="firstName" />
+    </div>
+    <div>
+        <label for="lastName">Last name</label>
+        <input type="text" id="lastName" name="lastName" />
+    </div>
+    <div>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" />
+    </div>
+    <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" />
+    </div>
+    <div>
+        <input type="submit" value="Log in or Register" />
+    </div>
+</form>
+
+<%- include('application/foot') %>

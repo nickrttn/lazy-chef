@@ -4,7 +4,7 @@
   "description": "Plan meals and grocery shopping for a week, no effort required.",
   "main": "server.js",
   "scripts": {
-    "dev": "DEBUG=app,prismic,recipes nodemon server.js",
+    "dev": "DEBUG=app,prismic,recipes,auth-router nodemon server.js",
     "test": "xo && npm run lint",
     "lint": "standard",
     "css": "cleancss -o client/build/index.css client/src/css/index.css",
@@ -31,13 +31,18 @@
   },
   "homepage": "https://github.com/nickrttn/lazy-chef#readme",
   "dependencies": {
+    "bcrypt": "^1.0.2",
+    "body-parser": "^1.17.2",
     "connect-redis": "^3.3.0",
     "debug": "^2.6.8",
     "dotenv": "^4.0.0",
     "ejs": "^2.5.6",
     "express": "^4.15.2",
     "express-session": "^1.15.3",
+    "mongodb": "^2.2.28",
     "morgan": "^1.8.2",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
     "prismic.io": "^3.5.6",
     "redis": "^2.7.1"
   },
