@@ -1,63 +1,103 @@
 const debug = require('debug')('user');
 const bcrypt = require('bcrypt');
 const MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectId;
 
 class User {
-	constructor() {
-		this.saltRounds = 10;
-		this.db = undefined;
-		this.collection = undefined;
-	}
+  constructor() {
+    this.saltRounds = 10;
+    this.db = undefined;
+    this.collection = undefined;
+  }
 
-	async _connect() {
-		if (!this.db) {
-			this.db = await MongoClient.connect(process.env.LC_DB_URL);
-			this.collection = await this.db.collection('users');
-		}
-	}
+  async _connect() {
+    if (!this.db) {
+      this.db = await MongoClient.connect(process.env.LC_DB_URL);
+      this.collection = await this.db.collection('users');
+    }
+  }
 
-	async create(user) {
-		this._connect();
-		user.hash = await bcrypt.hash(user.password, this.saltRounds);
+  async create(user) {
+    this._connect();
+    const {username, password, firstName, lastName} = user;
+    const hash = await bcrypt.hash(password, this.saltRounds);
+    const existingUser = await this.find(username);
 
-		try {
-			debug('user.create');
-			await this.collection.insertOne({
-				_id: user.username,
-				username: user.username,
-				hash: user.hash,
-				firstName: user.firstName,
-				lastName: user.lastName,
-				fullName: `${user.firstName} ${user.lastName}`
-			});
-		} catch (err) {
-			debug(err);
-			if (err.code === '11000') {
-				debug('duplicate key');
-			}
-		}
+    if (!existingUser) {
+      try {
+        const newUser = await this.collection.insertOne({
+          username, hash, firstName, lastName,
+          fullName: `${firstName} ${lastName}`,
+          initialSetupComplete: false
+        });
 
-		return {
-			_id: user.username,
-			username: user.username,
-			firstName: user.firstName,
-			hash: user.hash
-		};
-	}
+        return await this.read(newUser.insertedId);
+      } catch (err) {
+        return new Error(err);
+      }
+    }
 
-	async read(username) {
-		await this._connect();
-		const user = await this.collection.findOne({_id: username});
-		return user;
-	}
+    return new Error('That username is already taken.');
+  }
 
-	async update(userId, user) {
+  async read(userId) {
+    try {
+      await this._connect();
 
-	}
+      const user = await this.collection.findOne({
+        _id: {$eq: new ObjectId(userId)}
+      });
 
-	async delete(userId) {
+      return user;
+    } catch (err) {
+      return err;
+    }
+  }
 
-	}
+  async find(username) {
+    try {
+      await this._connect();
+
+      const user = await this.collection.findOne({
+        username: {$eq: username}
+      });
+
+      return user;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async update(userId, preferences) {
+    if (this._isValidUpdate(preferences)) {
+      try {
+        await this._connect();
+
+        const updatedUser = await this.collection.findOneAndUpdate(
+          {_id: {$eq: new ObjectId(userId)}},
+          {$set: preferences},
+          {returnOriginal: false}
+        );
+
+        return updatedUser;
+      } catch (err) {
+        return err;
+      }
+    }
+  }
+
+  _isValidUpdate(obj) {
+    const keys = Object.keys(obj);
+    const validKeys = ['categories'];
+
+    return keys.reduce((acc, key) => {
+      return acc || validKeys.includes(key);
+    }, false);
+  }
+
+  async delete(userId) {
+
+  }
 }
 
 module.exports = User;

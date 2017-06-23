@@ -4,10 +4,10 @@
   "description": "Plan meals and grocery shopping for a week, no effort required.",
   "main": "server.js",
   "scripts": {
-    "dev": "DEBUG=app,prismic,recipes,auth-router,user nodemon server.js",
+    "dev": "DEBUG=app,prismic,recipes,auth-router,user,passport,categories nodemon server.js",
     "test": "xo && npm run lint",
     "lint": "standard",
-    "css": "cleancss -o client/build/index.css client/src/css/index.css",
+    "css": "cleancss -o client/build/main.css client/src/css/main.css",
     "watch": "npm run browser-sync & npm run watch:css",
     "watch:css": "watch 'npm run css' client/src/css",
     "browser-sync": "browser-sync start --proxy localhost:3000 --port 3001 --files client/build/**/*"
@@ -33,6 +33,7 @@
   "dependencies": {
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.2",
+    "connect-flash": "^0.1.1",
     "connect-redis": "^3.3.0",
     "debug": "^2.6.8",
     "dotenv": "^4.0.0",
@@ -54,7 +55,13 @@
     "xo": "^0.18.1"
   },
   "xo": {
+    "envs": [
+      "browser",
+      "node"
+    ],
+    "space": true,
     "rules": {
+      "no-unused-vars": "off",
       "unicorn/no-new-buffer": "off",
       "unicorn/filename-case": "off",
       "unicorn/custom-error-definition": "off",

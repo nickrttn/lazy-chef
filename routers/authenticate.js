@@ -7,32 +7,26 @@ const passport = require('../lib/authenticate');
 const router = new express.Router();
 const user = new User();
 
-router.get('/register', (req, res) => {
-	res.render('register', {stylesheet: 'index'});
-});
+router
+  .get('/login', getLogin)
+  .get('/register', getRegister)
+  .post('/login/local', passport.authenticate('local', {
+    successRedirect: '/categories',
+    failureRedirect: '/auth/login',
+    failureFlash: true
+  }))
+  .post('/register', passport.authenticate('register', {
+    successRedirect: '/categories',
+    failureRedirect: '/auth/register',
+    failureFlash: true
+  }));
 
-router.post('/register', async (req, res) => {
-	const newUser = await user.create(req.body);
+function getRegister(req, res) {
+  res.render('register');
+}
 
-	debug(newUser);
-
-	req.login(newUser, err => {
-		if (err) {
-			return debug(err);
-		}
-
-		res.redirect('/categories');
-	});
-});
-
-router.get('/login', (req, res) => {
-	res.render('login', {stylesheet: 'index'});
-});
-
-router.post('/login', passport.authenticate('local', {
-	successRedirect: '/categories',
-	failureRedirect: '/auth/login',
-	failureFlash: true
-}));
+function getLogin(req, res) {
+  res.render('login');
+}
 
 module.exports = router;
