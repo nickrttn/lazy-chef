@@ -75,7 +75,7 @@ class User {
 
         const updatedUser = await this.collection.findOneAndUpdate(
           {_id: {$eq: new ObjectId(userId)}},
-          {$set: preferences},
+          {$set: {preferences}},
           {returnOriginal: false}
         );
 
@@ -88,7 +88,7 @@ class User {
 
   _isValidUpdate(obj) {
     const keys = Object.keys(obj);
-    const validKeys = ['categories'];
+    const validKeys = ['categories', 'frequency'];
 
     return keys.reduce((acc, key) => {
       return acc || validKeys.includes(key);

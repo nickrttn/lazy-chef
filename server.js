@@ -31,7 +31,7 @@ express()
   .use('/assets', express.static(path.join(__dirname, 'client/build')))
   .use(getMessages)
   .use('/auth', require('./routers/authenticate'))
-  .use('/categories', require('./routers/categories'))
+  .use('/preferences', require('./routers/preferences'))
   .use('/recipe', require('./routers/recipe'))
   .get('/', onindex)
   .listen(process.env.LC_PORT, onlisten);

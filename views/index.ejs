@@ -1,23 +1,20 @@
 <%- include('./application/head') %>
 
 	<main class="home">
-		<h1 class="lazy-chef">Lazy <span>Chef</span></h1>
-		<p>We know you're lazy. This will help you plan your meals and grocery shopping! Get five recipes and a grocery shopping list for the week with the click of a button.</p>
-		<h2>New here?</h2>
-		<ul>
-			<li>
-				<h2>Username and password</h2>
-				<div>
-					<h3>New here?</h3>
-					<a href="/auth/register">Register</a>
-				</div>
-				<div>
-					<h3>Already have an account?</h3>
-					<a href="/auth/login">Log in with Username & Password</a>
-				</div>
-			</li>
-			<li><a href="/auth/twitter">Log in with Twitter</a></li>
-			<li><a href="/auth/google">Log in with Google</a></li>
+		<section class="introduction">
+			<%- include('./components/logo') %>
+			<p>We know you're lazy. This will help you plan your meals and grocery shopping for the week! Get <strong>recipes and a shopping</strong> list with the click of a button.</p>
+		</section>
+		<section class="login-register">
+			<div>
+				<h2>New here?</h2>
+				<a href="/auth/register">Get started</a>
+			</div>
+			<div>
+				<h2>Already lazy?</h2>
+				<a href="/auth/login">Log in</a>
+			</div>
+		</section>
 		</ul>
 	</main>
 

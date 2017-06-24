@@ -4,7 +4,7 @@
   "description": "Plan meals and grocery shopping for a week, no effort required.",
   "main": "server.js",
   "scripts": {
-    "dev": "DEBUG=app,prismic,recipes,auth-router,user,passport,categories nodemon server.js",
+    "dev": "DEBUG=app,prismic,recipes,auth-router,user,passport,preferences,menu nodemon server.js",
     "test": "xo && npm run lint",
     "lint": "standard",
     "css": "cleancss -o client/build/main.css client/src/css/main.css",

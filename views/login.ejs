@@ -1,17 +1,23 @@
 <%- include('application/head') %>
 
-<form action="/auth/login/local" method="post">
-    <div>
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" />
-    </div>
-    <div>
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" />
-    </div>
-    <div>
-        <input type="submit" value="Log in or Register" />
-    </div>
-</form>
+<main>
+	<%- include('./components/logo') %>
+	<section class="form form--login">
+		<h2>Log in</h2>
+		<form action="/auth/login/local" method="post">
+		    <div>
+		        <label for="username">Username</label>
+		        <input type="text" id="username" name="username" />
+		    </div>
+		    <div>
+		        <label for="password">Password</label>
+		        <input type="password" id="password" name="password" />
+		    </div>
+		    <div>
+		        <input type="submit" value="Log in" />
+		    </div>
+		</form>
+	</section>
+</main>
 
 <%- include('application/foot') %>

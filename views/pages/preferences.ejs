@@ -1,0 +1,34 @@
+<%- include('../application/head') %>
+
+	<main>
+		<%- include('../components/logo.ejs') %>
+		<section class="preferences">
+			<h2>Exactly how lazy are you?</h2>
+			<p>Pick the categories you want to receive recipes from, and how often you'd like them.</p>
+			<form action="/preferences" method="POST">
+				<div>
+					<fieldset>
+						<legend>Categories</legend>
+						<div class="categories">
+							<% categories.forEach(category => { %>
+								<%- include('../components/categoryCheckbox', {category}) %>
+							<% }) %>
+						</div>
+					</fieldset>
+				</div>
+				<div>
+					<label>
+						How many recipes would you like each week?
+						<div class="range">
+							<span class="min">1</span>
+							<input type="range" value="5" min="1" max="7" name="frequency">
+							<span class="max">7</span>
+						</div>
+					</label>
+				</div>
+				<input type="submit" value="Select categories">
+			</form>
+		</section>
+	</main>
+
+<%- include('../application/foot') %>

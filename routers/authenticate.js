@@ -11,12 +11,12 @@ router
   .get('/login', getLogin)
   .get('/register', getRegister)
   .post('/login/local', passport.authenticate('local', {
-    successRedirect: '/categories',
+    successRedirect: '/preferences',
     failureRedirect: '/auth/login',
     failureFlash: true
   }))
   .post('/register', passport.authenticate('register', {
-    successRedirect: '/categories',
+    successRedirect: '/preferences',
     failureRedirect: '/auth/register',
     failureFlash: true
   }));
