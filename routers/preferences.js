@@ -1,34 +1,45 @@
 const debug = require('debug')('preferences');
 const express = require('express');
 
-const User = require('../db/user');
-const Prismic = require('../lib/prismic');
+const user = require('../db/user');
+const prismic = require('../lib/prismic');
 const ensureLoggedIn = require('../lib/ensureLoggedIn');
 
 const router = new express.Router();
-const p = new Prismic();
-const user = new User();
 
-router
-  .use(ensureLoggedIn())
-  .get('/', getCategories)
-  .post('/', setCategories);
+router.use(ensureLoggedIn()).get('/', getPreferences).post('/', setPreferences);
 
-async function getCategories(req, res) {
-  res.render('pages/preferences', {
-    categories: await p.allCategories()
-  });
+function getPreferences(req, res) {
+  prismic.allOfType('category', onresponse);
+
+  function onresponse(err, categories) {
+    if (err) {
+      req.flash('error', err.message);
+      return res.redirect('/preferences');
+    }
+
+    res.render('pages/preferences', {categories});
+  }
 }
 
-function setCategories(req, res) {
-  const updatedUser = user.update(req.user._id, req.body);
+function setPreferences(req, res) {
+  user.update(
+    req.user._id,
+    {
+      categories: req.body.categories,
+      frequency: parseInt(req.body.frequency, 10)
+    },
+    onupdate
+  );
 
-  if (updatedUser instanceof Error) {
-    req.flash('error', 'Something went wrong, please try again');
-    return res.redirect('/preferences');
+  function onupdate(err, user) {
+    if (err) {
+      req.flash('error', err.message);
+      return res.redirect('/preferences');
+    }
+
+    res.redirect('/menu');
   }
-
-  res.redirect('/menu');
 }
 
 module.exports = router;

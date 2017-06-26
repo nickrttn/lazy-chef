@@ -1,32 +1,35 @@
 const debug = require('debug')('recipes');
 const express = require('express');
 
-const Prismic = require('../lib/prismic');
-
-const p = new Prismic();
+const prismic = require('../lib/prismic');
 
 const router = new express.Router();
 
-router
-  .get('/all', all)
-  .get('/:slug', single);
+router.get('/all', all).get('/:slug', single);
 
-async function all(req, res) {
-  try {
-    const recipes = await p.allRecipes();
+function all(req, res) {
+  prismic.allOfType('recipe', onrecipes);
+
+  function onrecipes(err, recipes) {
+    if (err) {
+      req.flash('error', err.message);
+      return res.redirect('/menu');
+    }
+
     res.render('recipes', {recipes});
-  } catch (err) {
-    debug(err);
   }
 }
 
-async function single(req, res) {
-  try {
-    const recipe = await p.recipe(req.params.slug);
-    const category = await p.category(recipe.getLink('recipe.categories').id);
-    res.render('recipe-full', {recipe, category});
-  } catch (err) {
-    debug(err);
+function single(req, res) {
+  prismic.getByUID('recipe', req.params.slug, onrecipe);
+
+  function onrecipe(err, recipe) {
+    if (err) {
+      req.flash('error', err.message);
+      return res.redirect('/menu');
+    }
+
+    res.render('recipe-full', {recipe});
   }
 }
 

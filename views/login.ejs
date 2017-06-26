@@ -4,6 +4,7 @@
 	<%- include('./components/logo') %>
 	<section class="form form--login">
 		<h2>Log in</h2>
+		<%- include('components/messages.ejs') %>
 		<form action="/auth/login/local" method="post">
 		    <div>
 		        <label for="username">Username</label>

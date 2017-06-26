@@ -1,0 +1,7 @@
+<ul>
+	<% recipes.forEach(recipe => { %>
+		<li>
+			<%- include('./recipe-brief', {recipe}) %>
+		</li>
+	<% }) %>
+</ul>

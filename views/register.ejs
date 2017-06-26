@@ -7,6 +7,7 @@
 	<section class="form form--register">
 		<h2>Time to get lazy</h2>
 		<p>Fill in your details below to create an account.</p>
+		<%- include('components/messages.ejs') %>
 		<form action="/auth/register" method="post">
 	    <div>
         <label for="firstName">First name</label>

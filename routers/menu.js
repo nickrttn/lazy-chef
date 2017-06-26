@@ -1,27 +1,24 @@
 const debug = require('debug')('menu');
 const express = require('express');
 
-const User = require('../db/user');
-const Prismic = require('../lib/prismic');
+const menu = require('../db/menu');
 const ensureLoggedIn = require('../lib/ensureLoggedIn');
 
 const router = new express.Router();
-const p = new Prismic();
-const user = new User();
 
-router
-  .use(ensureLoggedIn())
-  .get('/', menu);
+router.use(ensureLoggedIn()).get('/', weeklyMenu);
 
-async function menu(req, res) {
-  'check if we have recipes for the user for this week'
-  'this week starts at a certain day, save that day'
-  'if not, create a new list of recipes'
-  'needs weighted randomization'
+function weeklyMenu(req, res) {
+  menu.read(req.user, onmenu);
 
-  res.render('pages/preferences', {
-    recipes: await user.getRecipes()
-  });
+  function onmenu(err, menu) {
+    if (err) {
+      req.flash('error', err.message);
+      res.redirect('/preferences');
+    }
+
+    res.render('pages/menu', {recipes: menu});
+  }
 }
 
 module.exports = router;

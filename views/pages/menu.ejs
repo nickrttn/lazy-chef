@@ -1,0 +1,11 @@
+<%- include('../application/head') %>
+
+	<main>
+		<%- include('../components/logo') %>
+		<section class="menu">
+			<h1>Your menu for the week</h1>
+			<%- include('../components/recipe-list', {recipes}) %>
+		</section>
+	</main>
+
+<%- include('../application/foot') %>

@@ -25,7 +25,17 @@ body {
 	padding: 0;
 	margin: 0;
 
-	font-family: 'Spectral', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	font-family: 'Spectral',
+		-apple-system,
+		BlinkMacSystemFont,
+		"Segoe UI",
+		Roboto,
+		Helvetica,
+		Arial,
+		sans-serif,
+		"Apple Color Emoji",
+		"Segoe UI Emoji",
+		"Segoe UI Symbol";
 	font-variant: common-ligatures;
 	font-kerning: normal;
 	line-height: 1.45;
@@ -97,18 +107,12 @@ label {
 	font-weight: 600;
 }
 
-input,
-textarea,
-button,
-select,
-option {
+input, textarea, button, select, option {
 	font-size: inherit;
 	font-family: inherit;
 }
 
-input[type="text"],
-input[type="password"],
-input[type="url"] {
+input[type="text"], input[type="password"], input[type="url"] {
 	padding: 0.25em;
 }
 
@@ -181,11 +185,11 @@ button {
 }
 
 .login-register > div {
+	position: relative;
 	display: flex;
 	flex-flow: row nowrap;
 	justify-content: center;
 	align-items: stretch;
-	position: relative;
 	flex: 0 1 20em;
 	min-height: 14em;
 	margin: 4em;
@@ -194,7 +198,8 @@ button {
 
 .login-register h2 {
 	position: absolute;
-	top: 0; left: 0;
+	top: 0;
+	left: 0;
 	margin: 0;
 	font-size: 4.236em;
 	line-height: 1;
@@ -219,9 +224,19 @@ button {
 	transition: transform 100ms linear;
 }
 
-.login-register a:hover,
-.login-register a:focus {
+.login-register a:hover, .login-register a:focus {
 	transform: rotate(-0.01turn) translateZ(0.5em);
+}
+
+.messages {
+	background-color: var(--red);
+	padding: .25em 1.5em;
+	margin: 0 0 2vh;
+}
+
+.messages p {
+	margin: .5em 0;
+	color: var(--brwhite);
 }
 
 /*h1, h2, h3 {

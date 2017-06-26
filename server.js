@@ -18,13 +18,15 @@ express()
   .set('x-powered-by', false)
   .use(logger('dev'))
   .use(bodyParser.urlencoded({extended: false}))
-  .use(session({
-    store: new RedisStore({client: redis.createClient()}),
-    secret: process.env.LC_SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {secure: !(process.env.NODE_ENV === 'development')}
-  }))
+  .use(
+    session({
+      store: new RedisStore({client: redis.createClient()}),
+      secret: process.env.LC_SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+      cookie: {secure: !(process.env.NODE_ENV === 'development')}
+    })
+  )
   .use(flash())
   .use(passport.initialize())
   .use(passport.session())
@@ -32,9 +34,15 @@ express()
   .use(getMessages)
   .use('/auth', require('./routers/authenticate'))
   .use('/preferences', require('./routers/preferences'))
+  .use('/menu', require('./routers/menu'))
   .use('/recipe', require('./routers/recipe'))
   .get('/', onindex)
   .listen(process.env.LC_PORT, onlisten);
+
+function getMessages(req, res, next) {
+  res.locals.messages = [...req.flash('error'), ...req.flash('info')];
+  next();
+}
 
 function onindex(req, res) {
   res.render('index');
@@ -43,9 +51,4 @@ function onindex(req, res) {
 function onlisten(err) {
   if (err) return debug(err); // eslint-disable-line curly
   debug(`Application listening on http://localhost:${process.env.LC_PORT}`);
-}
-
-function getMessages(req, res, next) {
-  res.locals.messages = [...req.flash('error'), ...req.flash('info')];
-  next();
 }

@@ -1,103 +1,132 @@
+/* eslint curly: 0, space-before-function-paren: 0 */
 const debug = require('debug')('user');
 const bcrypt = require('bcrypt');
-const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
+const getDay = require('date-fns').getDay;
 
-class User {
-  constructor() {
-    this.saltRounds = 10;
-    this.db = undefined;
-    this.collection = undefined;
-  }
+const connect = require('./connect');
 
-  async _connect() {
-    if (!this.db) {
-      this.db = await MongoClient.connect(process.env.LC_DB_URL);
-      this.collection = await this.db.collection('users');
-    }
-  }
+const user = {
+  collection: 'users',
+  saltRounds: 10,
+  validKeys: ['categories', 'frequency']
+};
 
-  async create(user) {
-    this._connect();
-    const {username, password, firstName, lastName} = user;
-    const hash = await bcrypt.hash(password, this.saltRounds);
-    const existingUser = await this.find(username);
+user.create = function(user, callback) {
+  const self = this;
+  const {username, password, firstName, lastName} = user;
 
-    if (!existingUser) {
-      try {
-        const newUser = await this.collection.insertOne({
-          username, hash, firstName, lastName,
-          fullName: `${firstName} ${lastName}`,
-          initialSetupComplete: false
-        });
+  bcrypt.hash(password, self.saltRounds, onhash);
 
-        return await this.read(newUser.insertedId);
-      } catch (err) {
-        return new Error(err);
-      }
-    }
+  function onhash(err, hash) {
+    if (err) return callback(err, null);
 
-    return new Error('That username is already taken.');
-  }
+    connect(self.collection, onconnect);
 
-  async read(userId) {
-    try {
-      await this._connect();
+    function onconnect(err, col) {
+      if (err) return callback(err, null);
 
-      const user = await this.collection.findOne({
-        _id: {$eq: new ObjectId(userId)}
-      });
+      col.findOne({username}, onfind);
 
-      return user;
-    } catch (err) {
-      return err;
-    }
-  }
+      function onfind(err, doc) {
+        if (err) return callback(err, null);
 
-  async find(username) {
-    try {
-      await this._connect();
+        if (doc) {
+          return callback(new Error('That username is already taken.'), null);
+        }
 
-      const user = await this.collection.findOne({
-        username: {$eq: username}
-      });
-
-      return user;
-    } catch (err) {
-      return err;
-    }
-  }
-
-  async update(userId, preferences) {
-    if (this._isValidUpdate(preferences)) {
-      try {
-        await this._connect();
-
-        const updatedUser = await this.collection.findOneAndUpdate(
-          {_id: {$eq: new ObjectId(userId)}},
-          {$set: {preferences}},
-          {returnOriginal: false}
+        col.insertOne(
+          {
+            username,
+            hash,
+            firstName,
+            lastName,
+            fullName: `${firstName} ${lastName}`,
+            initialSetupComplete: false
+          },
+          oninsert
         );
+      }
 
-        return updatedUser;
-      } catch (err) {
-        return err;
+      function oninsert(err, response) {
+        if (err) return callback(err, null);
+
+        self.read(response.insertedId, onread);
+
+        function onread(err, user) {
+          if (err) return callback(err, null);
+          callback(err, user);
+        }
       }
     }
   }
+};
 
-  _isValidUpdate(obj) {
+user.read = function(userId, callback) {
+  connect(this.collection, onconnect);
+
+  function onconnect(err, col) {
+    if (err) return callback(err, null);
+
+    col.findOne({_id: new ObjectId(userId)}, onfind);
+
+    function onfind(err, doc) {
+      if (err) return callback(err, null);
+      callback(err, doc);
+    }
+  }
+};
+
+user.update = function(userId, preferences, callback) {
+  const self = this;
+
+  if (isValidUpdate(preferences, self.validKeys)) {
+    connect(self.collection, onconnect);
+  }
+
+  function onconnect(err, col) {
+    if (err) return callback(err, null);
+
+    col.findOneAndUpdate(
+      {_id: new ObjectId(userId)},
+      {
+        $set: {
+          initialSetupComplete: true,
+          preferences: Object.assign(preferences, {
+            startOfWeek: getDay(new Date())
+          })
+        }
+      },
+      {returnOriginal: false},
+      onupdate
+    );
+  }
+
+  function onupdate(err, doc) {
+    if (err) return callback(err, null);
+    callback(null, doc);
+  }
+
+  function isValidUpdate(obj, validKeys) {
     const keys = Object.keys(obj);
-    const validKeys = ['categories', 'frequency'];
-
-    return keys.reduce((acc, key) => {
-      return acc || validKeys.includes(key);
-    }, false);
+    return keys.reduce((acc, key) => acc || validKeys.includes(key), false);
   }
+};
 
-  async delete(userId) {
+user.find = function(username, callback) {
+  connect(this.collection, onconnect);
 
+  function onconnect(err, col) {
+    if (err) return callback(err, null);
+
+    col.findOne({username: {$eq: username}}, onfind);
+
+    function onfind(err, doc) {
+      if (err) return callback(err, null);
+
+      callback(err, doc);
+    }
   }
-}
+};
 
-module.exports = User;
+module.exports = user;
