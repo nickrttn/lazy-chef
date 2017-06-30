@@ -53,7 +53,6 @@
     "prismic.io": "^3.5.6",
     "redis": "^2.7.1",
     "request": "^2.81.0",
-    "string-similarity": "^1.2.0"
   },
   "devDependencies": {
     "browser-sync": "^2.18.12",

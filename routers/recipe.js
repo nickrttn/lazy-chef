@@ -51,7 +51,7 @@ function single(req, res) {
         return res.redirect('/menu');
       }
 
-      fs.readdir(path.join(__dirname, '../uploads'), onread);
+      fs.readdir(path.join(__dirname, '..', 'uploads'), onread);
 
       function onread(err, files) {
         if (err) {
