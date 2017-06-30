@@ -1,11 +1,12 @@
 <%- include('../application/head') %>
+<%- include('../components/nav') %>
 
 	<main>
 		<%- include('../components/logo') %>
 		<section class="menu">
 			<h1>Your menu for the week</h1>
 			<p>
-				<a href="/menu/ingredients">Get your shopping list</a>
+				<a href="/menu/groceries">Get your shopping list</a>
 			</p>
 			<%- include('../components/recipe-list', {recipes}) %>
 		</section>

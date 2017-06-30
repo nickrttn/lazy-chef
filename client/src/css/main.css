@@ -80,6 +80,41 @@ body > main {
 	background-color: hsla(0, 100%, 100%, 0.95);
 }
 
+body > main > section,
+body > main > article {
+	padding: 0 calc(.75em + 2vw);
+}
+
+ul {
+	padding: 0; margin: 0;
+}
+
+nav {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-end;
+	background-color: var(--magenta);
+	padding: 0 calc((100vw - 90em) / 2);
+}
+
+nav ul {
+	display: flex;
+	flex-flow: row wrap;
+	list-style-type: none;
+	padding: 1em 0;
+	max-width: 100vh;
+}
+
+nav ul li {
+	margin: 0 2em;
+}
+
+nav ul li a {
+	color: black;
+	font-weight: 600;
+	text-decoration: none;
+}
+
 form {
 	display: flex;
 	flex-flow: column nowrap;
@@ -150,7 +185,7 @@ button {
 }
 
 .logo {
-	padding: 0 4vw;
+	padding: 0 calc(2em + 2vw);
 }
 
 .lazy-chef {
@@ -228,6 +263,65 @@ button {
 	transform: rotate(-0.01turn) translateZ(0.5em);
 }
 
+.menu ul {
+	display: flex;
+	flex-flow: column nowrap;
+	list-style-type: none;
+}
+
+.recipe h2 {
+	margin-bottom: .25em;
+}
+
+.recipe main {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: baseline;
+}
+
+.meta {
+	display: flex;
+	flex-flow: row wrap;
+	margin: -.15em;
+}
+
+.meta p {
+	flex: 0 1;
+	background: var(--brwhite);
+	padding: .25em .25em;
+	white-space: nowrap;
+	margin: .15em;
+}
+
+.meta .category {
+	color: var(--brwhite);
+}
+
+.ingredients ul {
+	padding-right: 2em;
+}
+
+.attribution {
+	padding: 2em 0;
+	font-size: .9em;
+}
+
+.photos ul {
+	display: flex;
+	flex-flow: row wrap;
+	list-style-type: none;
+	margin: -.15em;
+}
+
+.photos li {
+	margin: .15em;
+}
+
+.photos img {
+	max-width: 20em;
+	max-height: 15em;
+}
+
 .messages {
 	background-color: var(--red);
 	padding: .25em 1.5em;
@@ -238,190 +332,3 @@ button {
 	margin: .5em 0;
 	color: var(--brwhite);
 }
-
-/*h1, h2, h3 {
-	font-weight: 600;
-}
-
-h2 {
-	letter-spacing: 0.05em;
-	margin-bottom: 0;
-	font-size: 2.25em;
-}
-
-p {
-	max-width: 35em;
-	margin: 1.5em 0;
-}
-
-.home {
-	display: flex;
-	flex-flow: column nowrap;
-
-	max-width: 35em;
-
-	margin: 0 auto;
-	padding: 2.5vmin 2vmax;
-}
-
-
-
-.home .lazy-chef {
-	font-size: calc(2em + 2.5vw);
-}
-
-.home p:first-of-type {
-	position: relative;
-	margin-top: 3em;
-	text-align: justify;
-}
-
-.home p:first-of-type::after {
-	content: '';
-
-	position: absolute;
-	top: -1.25em;
-	left: 0;
-
-	width: 5em;
-	height: .15em;
-
-	background-color: var(--red);
-}
-
-.home a {
-	display: inline-block;
-	padding: 2vmin 2vmax;
-	background-color: var(--red);
-	color: var(--white);
-	text-decoration: none;
-	transition: all 120ms ease-out;
-}
-
-.home a:hover,
-.home a:focus {
-	outline: 4px dotted var(--brwhite);
-}
-
-.recipes {
-	max-width: 80vw;
-	margin: 0 auto;
-}
-
-.recipes ul {
-	list-style-type: none;
-	margin: -1em;
-	padding: 0;
-
-	display: flex;
-	flex-flow: row wrap;
-	align-items: baseline;
-}
-
-.recipes li {
-	flex: 0 15em;
-	margin: 1em;
-	background-color: var(--brwhite);
-	border-radius: 0.5em;
-	padding: 0.5em 0.75em;
-}
-
-.recipes h2 {
-	font-size: 1.25em;
-	margin: 0 0 .25em;
-}
-
-.meta {
-	font-size: 0.75em;
-	display: flex;
-	flex-flow: row wrap;
-}
-
-.recipes a {
-	color: var(--black);
-	text-decoration: none;
-}
-
-.meta p {
-	background: var(--red);
-	color: var(--brwhite);
-	border-radius: 0.25em;
-	padding: 0 .25em;
-	margin: 0 .25em;
-}
-
-.recipe {
-	max-width: 80vw;
-	margin: 0 auto;
-}
-
-.category-selection {
-	display: flex;
-	flex-flow: column nowrap;
-
-	max-width: 35em;
-
-	margin: 0 auto;
-	padding: 2.5vmin 2vmax;
-}
-
-.category-selection h2 {
-	letter-spacing: -0.025em;
-}
-
-.category-selection p {
-	margin-top: 0.5em;
-}
-
-.category-selection fieldset {
-	border: 0;
-	padding: 0;
-	margin: 0;
-}
-
-.category-selection legend {
-	margin: 0 0 .5em;
-	letter-spacing: 0.05em;
-	font-family: Spectral;
-	font-variant: small-caps;
-}
-
-.category-selection .categories {
-	display: flex;
-	flex-flow: column nowrap;
-}
-
-.category-selection label {
-	border-top: 3px solid var(--brwhite);
-	background: var(--brwhite);
-	color: var(--brblack);
-	margin: .15em 0;
-	padding: .5em;
-	max-width: 20em;
-	display: flex;
-	flex-flow: row nowrap;
-	align-items: center;
-}
-
-.category-selection label [type="checkbox"] {
-	margin-right: 1em;
-}
-
-.category-selection [type="submit"] {
-	margin-top: 1em;
-	font-size: inherit;
-	font-family: inherit;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	border: 0;
-	padding: 2vmin 2vmax;
-	background-color: var(--red);
-	color: var(--white);
-	text-decoration: none;
-	transition: all 120ms ease-out;
-}
-
-.category-selection [type="submit"]:hover,
-.category-selection [type="submit"]:focus {
-	outline: 4px dotted var(--brwhite);
-}*/

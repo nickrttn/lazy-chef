@@ -31,16 +31,32 @@ express()
   .use(passport.initialize())
   .use(passport.session())
   .use('/assets', express.static(path.join(__dirname, 'client/build')))
+  .use('/uploads', express.static(path.join(__dirname, 'uploads')))
   .use(getMessages)
+  .use(activePage)
   .use('/auth', require('./routers/authenticate'))
   .use('/preferences', require('./routers/preferences'))
   .use('/menu', require('./routers/menu'))
+  .use('/profile', require('./routers/profile'))
   .use('/recipe', require('./routers/recipe'))
+  .use('/upload', require('./routers/upload'))
   .get('/', onindex)
   .listen(process.env.LC_PORT, onlisten);
 
 function getMessages(req, res, next) {
   res.locals.messages = [...req.flash('error'), ...req.flash('info')];
+  next();
+}
+
+function activePage(req, res, next) {
+  res.locals.page = req.url;
+  res.locals.nav = {
+    'Shopping list': '/menu/groceries',
+    Menu: '/menu',
+    Settings: '/profile',
+    'Log out': '/auth/logout'
+  };
+
   next();
 }
 

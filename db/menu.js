@@ -13,7 +13,7 @@ const menu = {
 };
 
 menu.create = function(user, callback) {
-  const {frequency: freq, categories} = user.preferences;
+  const {frequency: freq, categories, userServings} = user.preferences;
   const self = this;
 
   prismic.allOfType('recipe', onresponse);
@@ -29,18 +29,17 @@ menu.create = function(user, callback) {
     function onconnect(err, col) {
       if (err) return callback(err, null);
 
-      col.insertOne(
-        {
-          created: Date.now(),
-          belongsTo: new ObjectId(user._id),
-          recipes: ids
-        },
-        oninsert
-      );
+      const doc = {
+        created: Date.now(),
+        belongsTo: new ObjectId(user._id),
+        recipes: ids
+      };
+
+      col.insertOne(doc, oninsert);
 
       function oninsert(err, res) {
         if (err) return callback(err, null);
-        callback(null, recipes);
+        callback(null, Object.assign(doc, {recipes}));
       }
     }
 
@@ -63,103 +62,48 @@ menu.read = function(user, callback) {
   function onfind(err, docs) {
     if (err) return callback(err, null);
 
-    const latestMenu = docs[0];
-
     // Create the first menu
-    if (!latestMenu) {
-      return self.create(user, oncreate);
+    if (!docs[0]) {
+      return self.create(user, onresponse);
     }
 
+    // Create a new menu if the created date is not in this week
     const userStartOfWeek = user.preferences.startOfWeek;
-    const isMenuCurrent = isSameWeek(new Date(latestMenu.created), new Date(), {
+    const isMenuCurrent = isSameWeek(new Date(docs[0].created), new Date(), {
       weekStartsOn: userStartOfWeek
     });
 
-    // Create a new menu if the created date is not in this week
     if (!isMenuCurrent) {
-      return self.create(user.oncreate);
+      return self.create(user, onresponse);
     }
 
-    prismic.getByIds(latestMenu.recipes, onresponse);
+    prismic.getByIds(docs[0].recipes, onresponse);
 
-    function onresponse(err, recipes) {
+    function onresponse(err, doc) {
       if (err) return callback(err, null);
-      callback(null, recipes);
-    }
-
-    function oncreate(err, recipes) {
-      if (err) return callback(err, null);
-      callback(null, recipes);
+      callback(null, Object.assign(docs[0] || {}, doc.recipes ? doc : {recipes: doc}));
     }
   }
 };
 
-// class Menu {
-//   constructor() {
-//     this.db = undefined;
-//     this.collection = undefined;
-//   }
+menu.update = function(user, groceries, callback) {
+  const self = this;
+  connect(this.collection, onconnect);
 
-//   async _connect() {
-//     if (!this.db) {
-//       this.db = await MongoClient.connect(process.env.LC_DB_URL);
-//       this.collection = await this.db.collection('menus');
-//     }
-//   }
+  function onconnect(err, col) {
+    if (err) return callback(err, null);
+    col.find({belongsTo: user._id}).sort({created: -1}).limit(1).next(onfind);
 
-//   async read(user) {
-//     try {
-//       this._connect();
+    function onfind(err, doc) {
+      if (err) return callback(err, null);
+      col.updateOne({_id: doc._id}, {$set: {groceries}}, onresult);
+    }
 
-//       let userMenus = await this.collection
-//         .find({
-//           belongsTo: new ObjectId(user._id)
-//         })
-//         .toArray();
-
-//       debug(user._id, userMenus);
-
-//       // This happens if there are no menu's yet
-//       if (!userMenus.length) {
-//         debug('nothing yet');
-//         userMenus = await this.create(user);
-//       }
-
-//       // is created + 7 days < date.now()?
-//       // we need to create a new menu
-
-//       return userMenus;
-//     } catch (err) {
-//       return new Error(err);
-//     }
-//   }
-
-//   async create(user) {
-//     try {
-//       this._connect();
-//       debug(this.collection);
-
-//       const preferred = user.preferences.categories;
-//       const recipes = await p.allRecipes().then(recipes =>
-//         recipes.filter(r => {
-//           const cat = r.getLink('recipe.categories');
-//           return preferred.includes(cat.document.slug);
-//         })
-//       );
-
-//       debug(user._id);
-
-//       const newMenu = await this.collection.insertOne({
-//         created: Date.now(),
-//         belongsTo: new ObjectId(user._id),
-//         recipes: sampleSize(recipes, user.preferences.frequency)
-//       });
-
-//       return this.read(user);
-//     } catch (err) {
-//       return new Error(err);
-//     }
-//   }
-// }
+    function onresult(err, result) {
+      if (err) return callback(err, null);
+      col.find({belongsTo: user._id}).sort({created: -1}).limit(1).next(callback);
+    }
+  }
+};
 
 module.exports = menu;

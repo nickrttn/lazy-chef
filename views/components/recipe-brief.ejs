@@ -3,8 +3,6 @@
     <h2 id="<%= recipe.slug %>"><%= recipe.getStructuredText('recipe.dish').asText() %></h2>
   </a>
   <div class="meta">
-    <p>Serves <%= recipe.getText('recipe.serves') %></p>
     <p><%= recipe.getText('recipe.preparation-time') %></p>
   </div>
-  <p class="category"><%= recipe.getLink('recipe.category') %> </p>
 </article>

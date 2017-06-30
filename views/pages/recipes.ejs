@@ -1,0 +1,18 @@
+<%- include('../application/head') %>
+<%- include('../components/nav') %>
+
+<main>
+	<%- include('../components/logo.ejs') %>
+	<section class="recipes">
+		<h1>All recipes</h1>
+		<ul>
+		<% recipes.forEach(recipe => { %>
+			<li>
+				<%- include('../components/recipe-brief', {recipe}) %>
+			</li>
+		<% }) %>
+		</ul>
+	</section>
+</main>
+
+<%- include('../application/foot') %>

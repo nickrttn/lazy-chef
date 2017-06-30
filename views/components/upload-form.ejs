@@ -1,0 +1,5 @@
+<form action="/upload/photos" enctype="multipart/form-data" method="POST">
+	<input type="hidden" value="<%= slug %>" name="recipe">
+	<input type="file" accept="image/*" name="photo">
+	<input type="submit" value="Upload">
+</form>

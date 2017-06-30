@@ -1,0 +1,60 @@
+<%- include('../application/head') %>
+<%- include('../components/nav') %>
+
+	<main>
+		<%- include('../components/logo.ejs') %>
+		<article class="recipe">
+		  <header>
+		  	<h2 id="<%= recipe.uid %>"><%= recipe.getStructuredText('recipe.dish').asText() %></h2>
+		  	<div class="meta">
+		  	  <p>Serves <%= recipe.getText('recipe.serves') %></p>
+		  	  <p><%= recipe.getText('recipe.preparation-time') %></p>
+		  	  <p class="category" style="background-color: <%= category.getColor('category.color') %>;"><%= category.getText('category.name') %></p>
+		  	</div>
+		  </header>
+		  <main>
+		  	<section class="ingredients">
+		  		<h3>Ingredients</h3>
+		  		<% components.forEach(list => { %>
+		  			<% if (components.length > 1) { %>
+						<h4><%= list.getText('ingredients.recipe-component') %></h4>
+						<% } %>
+						<ul>
+						<% list.getGroup('ingredients.ingredients').toArray().forEach(igde => { %>
+							<li><%= igde.getText('amount') %> <% if (!(igde.getText('unit') === 'none')) { %><%= igde.getText('unit') %><% } %> <%= igde.getText('ingredient') %></li>
+						<% }); %>
+						</ul>
+		  		<% }); %>
+		  	</section>
+		  	<section class="preparation">
+		  		<h3>Preparation</h3>
+					<% recipe.getGroup('recipe.preparation').toArray().forEach(inst => { %>
+						<h3><%= inst.getText('component') %></h3>
+						<div>
+							<%- inst.getStructuredText('instructions').asHtml() %>
+						</div>
+					<% }) %>
+		  	</section>
+		  </main>
+		  <footer class="attribution">
+		  	Recipe from: <a href="<%= recipe.getLink('recipe.source').url() %>"><%= recipe.getLink('recipe.source').url() %></a>
+		  </footer>
+		  <aside>
+		  	<% if (files.length > 0) { %>
+				<section class="photos">
+			  	<h3>Your food may look like this</h3>
+					<ul>
+						<% files.forEach(photo => { %>
+							<li><img src="/uploads/<%= photo %>" alt="<%= recipe.uid %>"></li>
+						<% }) %>
+					</ul>
+				</section>
+				<% } %>
+
+		  	<h3>Did you cook this? Upload a photo!</h3>
+		  	<%- include('../components/upload-form', {slug: recipe.uid}) %>
+		  </aside>
+		</article>
+	</main>
+
+<%- include('../application/foot') %>

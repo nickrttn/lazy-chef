@@ -10,6 +10,10 @@ const router = new express.Router();
 router.use(ensureLoggedIn()).get('/', getPreferences).post('/', setPreferences);
 
 function getPreferences(req, res) {
+  if (req.user.initialSetupComplete) {
+    return res.redirect('/menu');
+  }
+
   prismic.allOfType('category', onresponse);
 
   function onresponse(err, categories) {
@@ -18,7 +22,7 @@ function getPreferences(req, res) {
       return res.redirect('/preferences');
     }
 
-    res.render('pages/preferences', {categories});
+    res.render('pages/preferences', {categories, user: req.user});
   }
 }
 
@@ -27,7 +31,8 @@ function setPreferences(req, res) {
     req.user._id,
     {
       categories: req.body.categories,
-      frequency: parseInt(req.body.frequency, 10)
+      frequency: parseInt(req.body.frequency, 10),
+      servings: parseInt(req.body.servings, 10)
     },
     onupdate
   );

@@ -1,4 +1,5 @@
 <%- include('../application/head') %>
+<%- include('../components/nav') %>
 
 	<main>
 		<%- include('../components/logo.ejs') %>
@@ -23,6 +24,14 @@
 							<span class="min">1</span>
 							<input type="range" value="5" min="1" max="7" name="frequency">
 							<span class="max">7</span>
+						</div>
+					</label>
+				</div>
+				<div>
+					<label>
+						<div>
+							For how many people are you cooking?
+							<input type="number" placeholder="2" name="servings" min="1">
 						</div>
 					</label>
 				</div>

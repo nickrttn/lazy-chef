@@ -1,0 +1,10 @@
+<nav>
+	<ul>
+		<% for (title in nav) { %>
+			<% if (nav[title] === page) { %>
+				<li class="active"><a href="<%= nav[title] %>"><%= title %></a></li>
+		<% } else { %>
+			<li><a href="<%= nav[title] %>"><%= title %></a></li>
+		<% }} %>
+	</ul>
+</nav>

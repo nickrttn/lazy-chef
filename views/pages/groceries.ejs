@@ -1,0 +1,22 @@
+<%- include('../application/head') %>
+<%- include('../components/nav') %>
+
+	<main>
+		<%- include('../components/logo') %>
+		<section class="groceries">
+			<h1>Your grocery shopping list</h1>
+			<ul>
+				<% groceries.forEach(ingredient => { %>
+						<li>
+							<span class="amount"><%- Math.ceil(Math.abs(ingredient.amount)) %></span>
+							<% if (ingredient.unit) { %>
+								<span class="unit"><%- ingredient.unit %></span>
+							<% } %>
+							<span class="ingredient"><%- ingredient.ingredient %></span>
+						</li>
+				<% }); %>
+			</ul>
+		</section>
+	</main>
+
+<%- include('../application/foot') %>

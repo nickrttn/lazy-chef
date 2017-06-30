@@ -1,4 +1,6 @@
 const debug = require('debug')('recipes');
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 
 const prismic = require('../lib/prismic');
@@ -16,7 +18,7 @@ function all(req, res) {
       return res.redirect('/menu');
     }
 
-    res.render('recipes', {recipes});
+    res.render('pages/recipes', {recipes});
   }
 }
 
@@ -29,7 +31,44 @@ function single(req, res) {
       return res.redirect('/menu');
     }
 
-    res.render('recipe-full', {recipe});
+    const componentIds = [...recipe.getGroup('recipe.ingredients').toArray().map(list => {
+      return list.getLink('component').id;
+    }), recipe.getLink('recipe.categories').id];
+
+    prismic.getByIds(
+      [
+        ...recipe.getGroup('recipe.ingredients').toArray().map(list => {
+          return list.getLink('component').id;
+        }),
+        recipe.getLink('recipe.categories').id
+      ],
+      oncomponents
+    );
+
+    function oncomponents(err, docs) {
+      if (err) {
+        req.flash('error', err.message);
+        return res.redirect('/menu');
+      }
+
+      fs.readdir(path.join(__dirname, '../uploads'), onread);
+
+      function onread(err, files) {
+        if (err) {
+          req.flash('error', err.message);
+          return res.redirect('/menu');
+        }
+
+        res.render('pages/recipe', {
+          files: files.filter(f => f.includes(req.url.replace(/\//g, ''))),
+          preferences: req.user.preferences,
+          category: docs.find(doc => doc.type === 'category'),
+          components: docs.filter(doc => doc.type === 'ingredients'),
+          recipe
+        });
+      }
+    }
+
   }
 }
 

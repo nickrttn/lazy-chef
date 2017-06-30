@@ -1,0 +1,12 @@
+<%- include('../application/head') %>
+<%- include('../components/nav') %>
+
+	<main>
+		<%- include('../components/logo') %>
+		<section class="profile">
+			<h2><%= user.fullName %></h2>
+			<%- include('../components/settings-form') %>
+		</section>
+	</main>
+
+<%- include('../application/foot') %>
